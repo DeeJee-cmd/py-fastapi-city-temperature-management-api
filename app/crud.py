@@ -13,7 +13,9 @@ def get_city_by_name(db: Session, name: str) -> Optional[models.City]:
     return db.query(models.City).filter(models.City.name == name).first()
 
 
-def get_cities(db: Session, skip: int = 0, limit: int = 100) -> List[models.City]:
+def get_cities(
+    db: Session, skip: int = 0, limit: int = 100
+) -> List[models.City]:
     return db.query(models.City).offset(skip).limit(limit).all()
 
 

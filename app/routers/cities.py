@@ -22,7 +22,9 @@ def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[schemas.City])
-def read_cities(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_cities(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     return crud.get_cities(db, skip=skip, limit=limit)
 
 
@@ -39,7 +41,9 @@ def read_city(city_id: int, db: Session = Depends(get_db)):
 
 @router.put("/{city_id}", response_model=schemas.City)
 def update_city(
-    city_id: int, city_update: schemas.CityUpdate, db: Session = Depends(get_db)
+    city_id: int,
+    city_update: schemas.CityUpdate,
+    db: Session = Depends(get_db),
 ):
     db_city = crud.get_city(db, city_id=city_id)
     if not db_city:

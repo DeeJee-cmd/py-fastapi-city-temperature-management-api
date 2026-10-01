@@ -15,7 +15,9 @@ async def update_temperatures(db: Session = Depends(get_db)):
         return {"message": "No cities found in database to update."}
 
     city_map = {city.name: city.id for city in cities}
-    results = await services.fetch_temperatures_concurrently(list(city_map.keys()))
+    results = await services.fetch_temperatures_concurrently(
+        list(city_map.keys())
+    )
 
     created_records = []
     failed_cities = []

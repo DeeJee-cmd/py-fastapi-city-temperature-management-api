@@ -14,7 +14,12 @@ async def fetch_city_coordinates(
     try:
         response = await client.get(
             settings.OPEN_METEO_GEOCODING_URL,
-            params={"name": city_name, "count": 1, "language": "en", "format": "json"},
+            params={
+                "name": city_name,
+                "count": 1,
+                "language": "en",
+                "format": "json",
+            },
             timeout=5.0,
         )
         response.raise_for_status()
@@ -25,7 +30,9 @@ async def fetch_city_coordinates(
                 "longitude": data["results"][0]["longitude"],
             }
     except httpx.HTTPError as err:
-        logger.error(f"Failed to fetch coordinates for city '{city_name}': {err}")
+        logger.error(
+            f"Failed to fetch coordinates for city '{city_name}': {err}"
+        )
     return None
 
 
@@ -35,7 +42,11 @@ async def fetch_temperature_for_coordinates(
     try:
         response = await client.get(
             settings.OPEN_METEO_FORECAST_URL,
-            params={"latitude": lat, "longitude": lon, "current_weather": True},
+            params={
+                "latitude": lat,
+                "longitude": lon,
+                "current_weather": True,
+            },
             timeout=5.0,
         )
         response.raise_for_status()
@@ -43,7 +54,9 @@ async def fetch_temperature_for_coordinates(
         if "current_weather" in data:
             return float(data["current_weather"]["temperature"])
     except httpx.HTTPError as err:
-        logger.error(f"Failed to fetch temperature for coords ({lat}, {lon}): {err}")
+        logger.error(
+            f"Failed to fetch temperature for coords ({lat}, {lon}): {err}"
+        )
     return None
 
 
@@ -62,7 +75,9 @@ async def fetch_temperatures_concurrently(
     city_names: List[str],
 ) -> Dict[str, Optional[float]]:
     async with httpx.AsyncClient() as client:
-        tasks = [fetch_temperature_for_city(client, name) for name in city_names]
+        tasks = [
+            fetch_temperature_for_city(client, name) for name in city_names
+        ]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         weather_data = {}
